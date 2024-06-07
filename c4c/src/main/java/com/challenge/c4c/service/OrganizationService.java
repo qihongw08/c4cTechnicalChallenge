@@ -22,12 +22,12 @@ public class OrganizationService {
     }
 
     /**
-     * Removes the organization from the database given the id
+     * Removes the given organization from the database
      *
-     * @param id the id of the organization
+     * @param organization the organization entity to remove
      */
-    public void removeById(Long id) {
-        this.organizationRepository.deleteById(id);
+    public void removeByOrganization(Organization organization) {
+        this.organizationRepository.delete(organization);
     }
 
     /**
@@ -35,7 +35,18 @@ public class OrganizationService {
      *
      * @param organization the organization object to add
      */
-    public void addOrganization(Organization organization) {
-        this.organizationRepository.save(organization);
+    public Organization addOrganization(Organization organization) {
+        return this.organizationRepository.save(organization);
+    }
+
+    public Organization updateOrganization(String name, Organization organization) {
+        Organization oldOrganization = this.organizationRepository.findByName(name);
+
+        oldOrganization.setName(organization.getName());
+        oldOrganization.setDescription(organization.getDescription());
+        oldOrganization.setLogoURL(organization.getLogoURL());
+        oldOrganization.setActive(organization.isActive());
+
+        return oldOrganization;
     }
 }

@@ -5,26 +5,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
-@Table
 @Getter
 @Setter
+@Document(collection = "organizations")
 public class Organization {
     @Id
-    @GeneratedValue
-    @Column(unique = true, nullable = false)
-    int id;
-
-    @Column(nullable = false)
+    String id;
     String name;
-
-    @Column(nullable = false)
     String logoURL;
-
-    @Column(nullable = false)
     String description;
-
-    @Column(nullable = false)
-    boolean isActive;
+    boolean active;
 }

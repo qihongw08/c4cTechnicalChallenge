@@ -3,6 +3,10 @@ package com.challenge.c4c.controller;
 import com.challenge.c4c.model.Organization;
 import com.challenge.c4c.service.OrganizationService;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
+import org.aspectj.weaver.ast.Or;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -19,27 +23,56 @@ public class OrganizationController {
      * @return the all organization
      */
     @GetMapping("/find/all")
-    public List<Organization> getAllOrganization() {
-        return this.organizationService.getAllOrganization();
+    public ResponseEntity<List<Organization>> getAllOrganization() {
+        try {
+            return new ResponseEntity<>(this.organizationService.getAllOrganization(), HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
     }
 
     /**
-     * Endpoint that adds an organization.
+     * Endpoint that adds the given organization entity.
      *
-     * @param organization the organization
+     * @param organization the organization to add
      */
     @PostMapping("/add")
-    public void addOrganization(@RequestBody Organization organization) {
-        this.organizationService.addOrganization(organization);
+    public ResponseEntity<Organization> addOrganization(@RequestBody Organization organization) {
+        try {
+            return new ResponseEntity<>(this.organizationService.addOrganization(organization),
+                HttpStatus.CREATED);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     /**
-     * Endpoint that deletes organization by id.
+     * Endpoint that deletes the given organization entity.
      *
-     * @param id the id
+     * @param organization the organization to remove
      */
-    @DeleteMapping("/remove/{id}")
-    public void deleteOrganizationById(@PathVariable Long id) {
-        this.organizationService.removeById(id);
+    @DeleteMapping("/remove")
+    public ResponseEntity<HttpStatus> deleteOrganizationById(@RequestBody Organization organization) {
+        try {
+            this.organizationService.removeByOrganization(organization);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PutMapping("/update/{name}")
+    public ResponseEntity<Organization> updateOrganization(@PathVariable String  name,
+                                                           @RequestBody Organization organization) {
+        try {
+            return new ResponseEntity<>(this.organizationService.updateOrganization(name, organization),
+                HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
