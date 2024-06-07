@@ -7,6 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrganizationRepository extends MongoRepository<Organization, String> {
-  Organization findByName(String name);
 }
 

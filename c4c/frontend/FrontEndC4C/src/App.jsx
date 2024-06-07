@@ -5,12 +5,15 @@ import Card from 'react-bootstrap/Card';
 import OrgForm from './components/OrgForm';
 import './assets/App.css';
 import { Badge, Modal, Form } from 'react-bootstrap';
+import SearchBar from './components/SearchBar';
 
 function App() {
     const baseUrl = "http://localhost:8080/organizations";
     const [organizations, setOrganizations] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [editingOrg, setEditingOrg] = useState(null);
+    const [searchResult, setSearchResult] = useState([]);
+    const [showActive, setShowActive] = useState(false);
 
     useEffect(() => {
         axios.get(baseUrl + "/find/all")
@@ -34,16 +37,10 @@ function App() {
     }
 
     const handleSave = () => {
-        axios.put(baseUrl + "/update", editingOrg)
-            .then(response => {
-                const updatedOrganizations = organizations.map((org) => {
-                    if (org.id === editingOrg.id) {
-                        return editingOrg;
-                    }
-                    return org;
-                });
-                setOrganizations(updatedOrganizations);
+        axios.put(baseUrl + "/update/" + editingOrg.id.toString(), editingOrg)
+            .then(() => {
                 setEditingOrg(null);
+                window.location.reload();
             })
             .catch(error => console.log(error));
     };
@@ -56,10 +53,24 @@ function App() {
         }));
     };
 
+    const handleFilterToggle = () => {
+        setShowActive((prev) => !prev);
+    };
+
+    const filteredOrganizations = searchResult.filter((organization) => {
+        return showActive ? organization.active : true;
+    });
+
     return (
         <>
             <div className="title">
                 C4C: Projects
+            </div>
+            <div className="d-flex justify-content-center align-items-center">
+                <SearchBar setSearchResult={setSearchResult}/>
+                <Button className="filter-button" variant={showActive ? "success" : "secondary"} onClick={handleFilterToggle}>
+                    {showActive ? "Show All" : "Show Active Only"}
+                </Button>
             </div>
             <Button className="add-button" onClick={handleClick}>Add Organization</Button>
             {showForm && (
@@ -68,7 +79,7 @@ function App() {
             <br />
             <div className="container">
                 <div className="item">
-                    {organizations.map((organization) => (
+                    {filteredOrganizations.map((organization) => (
                         <Card className="item mx-auto" style={{ width: "fit-content" }} key={organization.id}>
                             <Card.Img className="mx-auto" variant="top" src={organization.logoURL} />
                             <Card.Body>

@@ -66,3 +66,10 @@
 .edit-button {
   margin-right: 1rem;
 }
+
+.filter-button {
+  padding: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}

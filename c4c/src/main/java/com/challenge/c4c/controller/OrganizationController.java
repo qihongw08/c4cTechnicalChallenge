@@ -18,7 +18,7 @@ public class OrganizationController {
     private final OrganizationService organizationService;
 
     /**
-     * Endpoint that gets all organization.
+     * Endpoint that gets all Organization.
      *
      * @return the all organization
      */
@@ -33,7 +33,7 @@ public class OrganizationController {
     }
 
     /**
-     * Endpoint that adds the given organization entity.
+     * Endpoint that adds the given Organization entity.
      *
      * @param organization the organization to add
      */
@@ -49,7 +49,7 @@ public class OrganizationController {
     }
 
     /**
-     * Endpoint that deletes the given organization entity.
+     * Endpoint that deletes the given Organization entity.
      *
      * @param organization the organization to remove
      */
@@ -64,15 +64,22 @@ public class OrganizationController {
         }
     }
 
-    @PutMapping("/update/{name}")
-    public ResponseEntity<Organization> updateOrganization(@PathVariable String  name,
+    /**
+     * Endpoint that updates the given id with the given Organization Entity
+     *
+     * @param id the id of the Organization to update
+     * @param organization the new Organization entity to update the Organization with the given id with
+     * */
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Organization> updateOrganization(@PathVariable String id,
                                                            @RequestBody Organization organization) {
         try {
-            return new ResponseEntity<>(this.organizationService.updateOrganization(name, organization),
+            return new ResponseEntity<>(this.organizationService.updateOrganization(id, organization),
                 HttpStatus.OK);
         }
         catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
     }
 }

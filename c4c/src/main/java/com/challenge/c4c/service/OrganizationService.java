@@ -5,12 +5,12 @@ import com.challenge.c4c.repository.OrganizationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class OrganizationService {
     private final OrganizationRepository organizationRepository;
-
 
     /**
      * Gets all organizations in the database.
@@ -39,14 +39,25 @@ public class OrganizationService {
         return this.organizationRepository.save(organization);
     }
 
-    public Organization updateOrganization(String name, Organization organization) {
-        Organization oldOrganization = this.organizationRepository.findByName(name);
+    /**
+     * Updates the Organization with the given id with the given Organization entity
+     *
+     * @param id the id of the Organization entity to update
+     * @param newOrganization the new Organization entity to update the old one with
+     */
+    public Organization updateOrganization(String id, Organization newOrganization) {
+        Optional<Organization> oldOrganization = this.organizationRepository.findById(id);
+        if (oldOrganization.isPresent()) {
+            Organization organization = oldOrganization.get();
 
-        oldOrganization.setName(organization.getName());
-        oldOrganization.setDescription(organization.getDescription());
-        oldOrganization.setLogoURL(organization.getLogoURL());
-        oldOrganization.setActive(organization.isActive());
+            organization.setName(newOrganization.getName());
+            organization.setDescription(newOrganization.getDescription());
+            organization.setLogoURL(newOrganization.getLogoURL());
+            organization.setActive(newOrganization.isActive());
 
-        return oldOrganization;
+            return this.organizationRepository.save(organization);
+        }
+
+        return newOrganization;
     }
 }
